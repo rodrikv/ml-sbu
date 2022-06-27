@@ -16,12 +16,17 @@ class TestDataSeries:
             end_time: datetime = datetime(year=2022, month=4, day=11),
             timeframe: int = 60 * 60 * 24
         ) -> None:
+        t = {
+            60 * 60 * 24: timedelta(days=1),
+            60 * 60 * 24 * 30: timedelta(weeks=4)
+        }
+
         self.mode = mode
         self.timeframe = timeframe
         self.start_time = start_time
         self.end_time = end_time
         self.timeseries = {}
-        self.time_delta = timedelta(seconds=self.timeframe)
+        self.time_delta = t[timeframe]
 
     def generate_dict(self):
         df = pd.DataFrame(columns=['time', 'vol'])
@@ -39,5 +44,5 @@ class TestDataSeries:
 
 
 
-# timeseries = TestDataSeries(timeframe=60 * 60 * 24 * 30)
-# timeseries.save_dict(timeseries.generate_dict())
+timeseries = TestDataSeries(timeframe=60 * 60 * 24)
+timeseries.save_dict(timeseries.generate_dict())
