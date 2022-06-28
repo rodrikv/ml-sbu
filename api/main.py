@@ -27,7 +27,8 @@ async def interpol(data: Dict, config: Config):
     else:
         result = linear_interpolation(df, config)
 
-    return {'data': result.to_dict()}
+    result = result.to_dict()
+    return {'data': result}
 
 
 @app.post('/interpolation/timeswitch')
@@ -36,7 +37,8 @@ async def tinterpol(data: Dict, config: ConfigTimeSwitch):
     df['time'] = pd.to_datetime(df['time'], format=r'%Y/%m/%d')
     result = linear_interpolation(df, config)
 
-    return {'data': result.to_dict()}
+    result = result.to_dict()
+    return {'data': result}
 
 
 @app.post('/detect/outlier')
@@ -55,23 +57,24 @@ async def detection(data: Dict, config: ConfigDetection):
         df['dbscan'] = dbscan_
         df['isolation_forest'] = isf
 
-    data = data.to_dict()
-    return {'data': data, 'config': config}
+    result = df.to_dict()
+    return {'data': result, 'config': config}
 
 
 @app.post('/management/balanced')
 async def balanced(data: Dict, config: ConfigBalanced):
-    data = pd.DataFrame()
+    result = pd.DataFrame()
     major_class_tag = config.major_class_tag
     minor_class_tag = config.minor_class_tag
     if config.method == ConfigBalanced.method.SMOTE:
-        data = smote(data, major_class_tag, minor_class_tag)
+        result = smote(data, major_class_tag, minor_class_tag)
     elif config.method == ConfigBalanced.method.oversampling:
-        data = oversampling(data, major_class_tag, minor_class_tag)
+        result = oversampling(data, major_class_tag, minor_class_tag)
     elif config.method == ConfigBalanced.method.undersampling:
-        data = undersampling(data, major_class_tag, minor_class_tag)
+        result = undersampling(data, major_class_tag, minor_class_tag)
 
-    return {'data': data}
+    result = result.to_dict()
+    return {'data': result}
 
 
 if __name__ == '__main__':
